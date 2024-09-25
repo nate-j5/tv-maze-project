@@ -8,7 +8,6 @@ const $episodesList = $("#episodesList");
 const $episodesArea = $("#episodesArea");
 const $searchForm = $("#searchForm");
 
-
 /** Given a search term, search for tv shows that match that query.
  *
  *  Returns (promise) array of show objects: [show, show, ...].
@@ -27,7 +26,7 @@ async function getShowsByTerm(term) {
   );
   const apiShowData = await response.json();
 
-  return apiShowData.map(scoreAndShow => {
+  return apiShowData.map((scoreAndShow) => {
     const show = scoreAndShow.show;
     return {
       id: show.id,
@@ -45,7 +44,6 @@ async function getShowsByTerm(term) {
     // };
   });
 }
-
 
 /** Given list of shows, create markup for each and append to DOM.
  *
@@ -75,7 +73,6 @@ function displayShows(shows) {
   }
 }
 
-
 /** Handle search form submission: get shows from API and display.
  *    Hide episodes area (that only gets shown if they ask for episodes)
  */
@@ -93,7 +90,6 @@ $searchForm.on("submit", async function handleSearchForm(evt) {
   await searchShowsAndDisplay();
 });
 
-
 /** Given a show ID, get from API and return (promise) array of episodes:
  *      { id, name, season, number }
  */
@@ -106,7 +102,7 @@ async function getEpisodesOfShow(showId) {
 
   console.log(apiShowData);
 
-  return apiShowData.map(ep => ({
+  return apiShowData.map((ep) => ({
     id: ep.id,
     name: ep.name,
     season: ep.season,
@@ -120,7 +116,6 @@ async function getEpisodesOfShow(showId) {
   //     ({id, name, season, number})
   // );
 }
-
 
 /** Given list of episodes, create markup for each and append to DOM
  *
@@ -136,14 +131,14 @@ function displayEpisodes(episodes) {
          ${episode.name}
          (season ${episode.season}, episode ${episode.number})
        </li>
-      `);
+      `
+    );
 
     $episodesList.append($episode);
   }
 
   $episodesArea.show();
 }
-
 
 /** Handle click on episodes button: get episodes for show and display */
 
@@ -152,11 +147,10 @@ async function retrieveEpisodesAndDisplay(showId) {
   displayEpisodes(episodes);
 }
 
-
 // note that:
-// - we're using "event delegation", since the buttons *won't exist* on page
+// - I'm using "event delegation", since the buttons *won't exist* on page
 //   load, only after they've search for shows
-// - our "discriminant" for this event handler is the class Show-getEpisodes;
+// - the "discriminant" for this event handler is the class Show-getEpisodes;
 //   this is much better than "match-all-buttons", since that would be a clear
 //   bug if anyone ever added any other kind of button to the app!
 
@@ -167,9 +161,7 @@ $showsList.on(
     // here's one way to get the ID of the show: search "closest" ancestor
     // with the class of .Show (which is put onto the enclosing div, which
     // has the .data-show-id attribute).
-    const showId = Number(
-      $(evt.target).closest(".Show").data("show-id")
-    );
+    const showId = Number($(evt.target).closest(".Show").data("show-id"));
 
     // here's another way to get the ID of the show: search "closest" ancestor
     // that has an attribute of 'data-show-id'. This is called an "attribute
@@ -177,4 +169,5 @@ $showsList.on(
     // const showId = $(evt.target).closest("[data-show-id]").data("show-id");
 
     await retrieveEpisodesAndDisplay(showId);
-  });
+  }
+);
